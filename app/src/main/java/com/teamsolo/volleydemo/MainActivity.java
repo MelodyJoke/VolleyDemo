@@ -102,6 +102,7 @@ public class MainActivity extends BaseActivity {
                 });
 
         Map<String, String> paras = new HashMap<>();
+        paras.put("a", "a");
         volley.gsonPostRequest(
                 TAG,
                 paras,
