@@ -1,9 +1,13 @@
 package com.teamsolo.volleydemo;
 
+import android.Manifest.permission;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
@@ -21,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.support.v4.content.PermissionChecker.PERMISSION_GRANTED;
 
 public class MainActivity extends BaseActivity {
 
@@ -44,6 +50,29 @@ public class MainActivity extends BaseActivity {
         bindListeners();
 
         request();
+
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
+        if (PermissionChecker.checkCallingOrSelfPermission(mContext, permission.CAMERA) != PERMISSION_GRANTED
+                || PermissionChecker.checkCallingOrSelfPermission(mContext, permission.WRITE_EXTERNAL_STORAGE) != PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{permission.CAMERA, permission.WRITE_EXTERNAL_STORAGE}, 10086);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 10086) {
+            for (int result : grantResults)
+                if (result != PERMISSION_GRANTED) {
+                    Snackbar.make(fab, "Permissions require failed.", Snackbar.LENGTH_INDEFINITE).show();
+                    return;
+                }
+
+            Snackbar.make(fab, "Something to do here.", Snackbar.LENGTH_INDEFINITE).show();
+        }
     }
 
     @Override
